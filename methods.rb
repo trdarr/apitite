@@ -5,6 +5,14 @@ class Pair < Method
 
   required :pairing_phrase
   required :user_name
+  optional
+end
+
+class PairQR < Method
+  post 'pairings/create/qr'
+
+  required :user_name
+  optional
 end
 
 class PairSMS < Method
@@ -17,6 +25,48 @@ end
 
 class GetPairingStatus < Method
   get 'pairings/:pairing_id'
+end
+
+class Authenticate < Method
+  post 'authentication_requests/initiate'
 
   required :pairing_id
+  required :terminal_name
+  optional :action_name
+  optional
+end
+
+class AuthenticateByUserName < Method
+  post 'authentication_requests/initiate'
+
+  required :user_name
+  required :name
+  required :name_extra
+  optional :action_name
+  optional
+end
+
+class GetAuthenticationStatus < Method
+  get 'authentication_requests/:authentication_request_id'
+end
+
+class AuthenticateWithOTP < Method
+  post 'authentication_reuqests/:authentication_request_id/otp_auth'
+
+  required :otp
+end
+
+class CreateUserTerminal < Method
+  post 'user_terminals/create'
+
+  required :user_name
+  required :name
+  required :name_extra
+end
+
+class SetToopherEnabledForUser < Method
+  post 'users'
+
+  required :user_name
+  required :enabled
 end
