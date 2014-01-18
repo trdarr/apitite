@@ -6,6 +6,8 @@ class Pair < Method
   required :pairing_phrase
   required :user_name
   optional
+
+  returns PairingStatus
 end
 
 class PairQR < Method
@@ -13,6 +15,8 @@ class PairQR < Method
 
   required :user_name
   optional
+
+  returns PairingStatus
 end
 
 class PairSMS < Method
@@ -25,6 +29,8 @@ end
 
 class GetPairingStatus < Method
   get 'pairings/:pairing_id'
+
+  returns PairingStatus
 end
 
 class Authenticate < Method
@@ -34,6 +40,8 @@ class Authenticate < Method
   required :terminal_name
   optional :action_name
   optional
+
+  returns AuthenticationStatus
 end
 
 class AuthenticateByUserName < Method
@@ -44,6 +52,8 @@ class AuthenticateByUserName < Method
   required :name_extra
   optional :action_name
   optional
+
+  returns AuthenticationStatus
 end
 
 class GetAuthenticationStatus < Method

@@ -1,5 +1,6 @@
 $: << './lib'
 require 'set'
+require_relative 'responses'
 
 class Python
   def self.method_def(method)
@@ -10,7 +11,7 @@ class Python
     param_list << params.map { |e| ", #{e.name}=None" }
     param_list << ', **kwargs' unless kwargs.empty?
 
-    "    def #{method.name}(self#{param_list.join}):"
+    "def #{method.name :snake}(self#{param_list.join}):"
   end
 
   def self.method_body(method)
@@ -34,17 +35,23 @@ class Python
 
     verb = method.verb
     lines << "result = self._request(uri, '#{method.verb.to_s.upcase}', params)"
-    lines.map { |e| ' ' * 8 << e } << "\n"
+    lines << "return #{method.return_type.name}(result)" if method.return_type
+
+    lines.map { |e| ' ' * 4 << e } << "\n"
   end
 end
 
-def methods
+def get(file_name, ancestor)
   old_symbols = Object.constants.to_set
-  require_relative 'methods'
+  require_relative file_name
   symbols = Object.constants.to_set.difference old_symbols
   symbols.map { |e| Object.const_get e }
-         .keep_if { |e| e.ancestors.include? Method }
+         .keep_if { |e| e.ancestors.include? ancestor }
+
 end
+
+def methods; get 'methods', Method; end
+def responses; get 'responses', Responses; end
 
 methods.each do |method|
   puts Python.method_def method

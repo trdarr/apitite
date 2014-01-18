@@ -1,5 +1,5 @@
-class Resource
-  attr_accessor :method, :endpoint
+class MethodResource
+  attr_accessor :method, :endpoint, :return_type
   attr_reader :required_params, :optional_params
 
   def required_params

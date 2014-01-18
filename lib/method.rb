@@ -1,8 +1,11 @@
+require 'method_resource'
+require 'named'
 require 'parameter'
-require 'resource'
 
 class Method
   class << self
+    include Named
+
     # Resource mutators that define the Method DSL.
     def get(endpoint)
       set_endpoint :get, endpoint
@@ -23,28 +26,21 @@ class Method
       resource.optional_params << parameter
     end
 
-    # Resource accessors that make the Method DSL useful.
-    def name(type=:snake)
-      name = self.to_s  # Can't use Class#name because recursion.
-
-      if type == :snake
-        name.gsub(/([a-z])([A-Z])/) { |s| "#{$1}_#{$2}" }.downcase
-      elsif type == :camel
-        name.gsub(/^([A-Z])/) { |s| $1.downcase }
-      else
-        name
-      end
+    def returns(type)
+      resource.return_type = type
     end
 
+    # Resource accessors that make the Method DSL useful.
     def verb; resource.method; end
     def method; resource.method; end
     def endpoint; resource.endpoint; end
     def required_params; resource.required_params; end
     def optional_params; resource.optional_params; end
+    def return_type; resource.return_type; end
 
     # Each Method subclass has a Resource as a backing store.
     def resource
-      @resource ||= Resource.new
+      @resource ||= MethodResource.new
     end
 
     def set_endpoint(method, endpoint)
